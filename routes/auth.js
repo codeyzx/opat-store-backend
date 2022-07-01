@@ -5,8 +5,10 @@ const jwt = require("jsonwebtoken");
 
 // REGISTER
 router.post("/register", async (req, res) => {
-  const salt = await bcrypt.genSalt(parseInt(process.env.PASS_SALT));
-  const hash = await bcrypt.hash(req.body.password, salt);
+  const hash = await bcrypt.hash(
+    req.body.password,
+    parseInt(process.env.SECRET_CODE)
+  );
 
   const newUser = new User({
     username: req.body.username,
@@ -39,9 +41,8 @@ router.post("/login", async (req, res) => {
     const accessToken = jwt.sign(
       {
         id: user._id,
-        isAdmin: user.isAdmin,
       },
-      process.env.JWT_SEC,
+      process.env.SECRET_CODE,
       { expiresIn: "3d" }
     );
 
